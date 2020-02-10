@@ -8,6 +8,8 @@
     <packaging>mule-application</packaging>
 
 	<name>objectstore-demo</name>
+	
+	
 
     <properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

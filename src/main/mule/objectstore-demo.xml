@@ -31,6 +31,6 @@ payload]]></ee:set-payload>
 		<http:listener doc:name="/GET reteieve" doc:id="c3628e6a-ce5f-4c24-ae19-e2a1c95371b1" config-ref="HTTP_Listener_config" path="/retrieve"/>
 		<set-variable value="#[attributes.queryParams.key]" doc:name="Set key Variable" doc:id="0d786675-ba49-438f-8aac-721e356617cb" variableName="key" />
 		<os:retrieve doc:name="Retrieve" doc:id="13ff48ed-e2b5-48dd-9c0c-223fb1512c58" key="#[vars.key]" objectStore="My_Object_store"/>
-		<logger level="INFO" doc:name="Logger" doc:id="80bf053b-69a3-4ff1-9e31-6f34d00e45d7" message="The retrieved Value"/>
+		<logger level="INFO" doc:name="Logger" doc:id="80bf053b-69a3-4ff1-9e31-6f34d00e45d7" message="The retrieved Value:#"/>
 	</flow>
 </mule>
