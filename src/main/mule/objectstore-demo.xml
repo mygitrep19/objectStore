@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:os="http://www.mulesoft.org/schema/mule/os"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/os http://www.mulesoft.org/schema/mule/os/current/mule-os.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="7793d480-2bdb-41f8-9594-11cd33a0bdea" >
+		<http:listener-connection host="0.0.0.0" port="8055" />
+	</http:listener-config>
+	<os:object-store name="My_Object_store" doc:name="Object store" doc:id="2780058c-4664-474d-8966-21c97adeabed" />
+	<flow name="store-Flow" doc:id="fec440a6-efff-4934-87ed-279fa5ad925d" >
+		<http:listener doc:name="/Store GET" doc:id="ece31a59-b544-4341-bbe0-a69d74253a57" config-ref="HTTP_Listener_config" path="/store"/>
+		<set-variable value="#[attributes.queryParams.key]" doc:name="Set Variable key" doc:id="b5d5e41a-23a3-4075-aa55-1cc0c323d300" variableName="key"/>
+		<set-variable value="#[attributes.queryParams.value]" doc:name="Set Variable value" doc:id="503ac345-ae84-4123-ba19-9bb33d6c10e3" variableName="value"/>
+		<os:store doc:name="Store" doc:id="488ff6ec-7065-4387-8b02-d92de86bd998" key="#[vars.key]" objectStore="My_Object_store">
+			<os:value ><![CDATA[#[vars.value]]]></os:value>
+		</os:store>
+		<logger level="INFO" doc:name="Logger" doc:id="70441b04-88fd-439e-85c4-a3dad27ea6a0" message="The value was saved in the store:#[attributes.headers]"/>
+		<ee:transform doc:name="Transform Message" doc:id="5a405973-8c06-4ee4-9e08-ddeb535130ad" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="RetrieveFlow" doc:id="48abbb4f-e1ac-43ce-bca2-41b3a3b58354" >
+		<http:listener doc:name="/GET reteieve" doc:id="c3628e6a-ce5f-4c24-ae19-e2a1c95371b1" config-ref="HTTP_Listener_config" path="/retrieve"/>
+		<set-variable value="#[attributes.queryParams.key]" doc:name="Set key Variable" doc:id="0d786675-ba49-438f-8aac-721e356617cb" variableName="key" />
+		<os:retrieve doc:name="Retrieve" doc:id="13ff48ed-e2b5-48dd-9c0c-223fb1512c58" key="#[vars.key]" objectStore="My_Object_store"/>
+		<logger level="INFO" doc:name="Logger" doc:id="80bf053b-69a3-4ff1-9e31-6f34d00e45d7" message="The retrieved Value"/>
+	</flow>
+</mule>
